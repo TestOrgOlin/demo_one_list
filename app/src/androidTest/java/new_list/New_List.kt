@@ -31,49 +31,56 @@ class new_List {
     var mActivityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
 
     @Test
+    // In this test we are going to create a new list, display the more options,
+    // and create a new task inside the created list
     fun new_List() {
+        //look on the screen for the element with an id,
+        // then check for all the instances of the element are available and clickable
         onView(withId(R.id.buttonAddList)).check(matches(allOf(isEnabled(), isClickable())))
             .perform(
+                //then perform an override of the restrictions for an element not fully viewed
                 object : ViewAction {
                     override fun getConstraints(): Matcher<View> {
                         return isEnabled() // no constraints, they are checked above
                     }
 
                     override fun getDescription(): String {
-                        return "click plus button"
+                        return "click plus button" //the action for clicking
                     }
 
                     override fun perform(uiController: UiController, view: View) {
-                        view.performClick()
+                        view.performClick() //next the perform method will make the click
                     }
                 }
             )
-
-        val appCompatEditText = onView(
+        //the locator for the input box for list title element is kept in a variable
+        val newlistTitleText = onView(
             allOf(
                 withId(R.id.listTitle),
-                childAtPosition(
+                childAtPosition( //we use a created method to search in the component tree by index of child
                     allOf(
                         withId(R.id.constraintLayout),
                         childAtPosition(
                             withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                            0
+                            0 //define the position in which the child is located
                         )
                     ),
                     0
                 ),
-                isDisplayed()
+                isDisplayed() //the element we are going to interact needs to be displayed
             )
         )
-        appCompatEditText.perform(replaceText("NEW_LIST"), closeSoftKeyboard())
+        //we call the locator chained to an action of typing text and closing the keyboard
+        newlistTitleText.perform(replaceText("NEW_LIST"), closeSoftKeyboard())
 
-        val constraintLayout = onView(
+        //the locator for the more options element is saved in the
+        val moreOptionsbutton = onView(
             allOf(
                 withId(R.id.moreOptionsLayout),
                 childAtPosition(
                     allOf(
                         withId(R.id.constraintLayout),
-                        childAtPosition(
+                        childAtPosition(  //the class name is found a the top of the component tree
                             withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
                             0
                         )
@@ -83,10 +90,12 @@ class new_List {
                 isDisplayed()
             )
         )
-        constraintLayout.perform(click())
+        //we call the locator chained to an action clicking
+        moreOptionsbutton.perform(click())
 
-        val appCompatImageButton2 = onView(
-            allOf(
+        //the button for creating a list is saved in a variable
+        val validateListButton = onView(
+            allOf(                             //the content description help us narrowing down more the locator
                 withId(R.id.validateEditList), withContentDescription("Validate"),
                 childAtPosition(
                     allOf(
@@ -101,9 +110,11 @@ class new_List {
                 isDisplayed()
             )
         )
-        appCompatImageButton2.perform(click())
+        //we call the locator chained to an action clicking
+        validateListButton.perform(click())
 
-        val appCompatEditText2 = onView(
+        //the locator for the input box to add a new task to the list
+        val newtaskTitleText = onView(
             allOf(
                 withId(R.id.addItemEditText),
                 childAtPosition(
@@ -119,9 +130,11 @@ class new_List {
                 isDisplayed()
             )
         )
-        appCompatEditText2.perform(replaceText("New_Task"), closeSoftKeyboard())
+        //we call the locator chained to an action of typing text and closing the keyboard
+        newtaskTitleText.perform(replaceText("New_Task"), closeSoftKeyboard())
 
-        val appCompatImageButton3 = onView(
+        //we save the location for the validate task button
+        val validateTaskButton = onView(
             allOf(
                 withId(R.id.validate), withContentDescription("Validate"),
                 childAtPosition(
@@ -137,12 +150,26 @@ class new_List {
                 isDisplayed()
             )
         )
-        appCompatImageButton3.perform(click())
+        // the action perform to this button is a click()
+        validateTaskButton.perform(click())
     }
 
     @Test
+    // In this test we are going to navigate the TO DO list and try to create a new task
+    // we seeded the input box locator to fail
     fun TODO_TASK() {
-        val appCompatEditText = onView(
+       //the locator for the list button is save in a variable
+        val todoList = onView(
+            allOf(
+                withId(2131296721),
+                withParentIndex(1),
+                isDisplayed()
+            )
+        )
+        //we perform a click on the list
+        todoList.perform(click())
+
+        val newTaskTODOList = onView(
             allOf(
                 withId(R.id.addItemEditText),
                 childAtPosition(
@@ -153,14 +180,17 @@ class new_List {
                             1
                         )
                     ),
-                    2 //0
+                    2 //the error is seeded here, the actual position is 0
                 ),
                 isDisplayed()
             )
         )
-        appCompatEditText.perform(replaceText("NEW_TASK"), closeSoftKeyboard())
+        //the typing is not going to be able to perform as is a wrong locator
+        newTaskTODOList.perform(replaceText("NEW_TASK"), closeSoftKeyboard())
     }
 
+    //Here we create a function to search the locations of the elements by child
+    //child position
     private fun childAtPosition(
         parentMatcher: Matcher<View>, position: Int
     ): Matcher<View> {

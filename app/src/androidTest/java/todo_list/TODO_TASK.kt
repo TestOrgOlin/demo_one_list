@@ -31,15 +31,20 @@ class TODO_TASK {
     var mActivityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
 
     @Test
+    // In this test we are going to navigate the TO DO list and create a new task
     fun TODO_TASK() {
-        val appCompatTODOText = onView(
+        //the locator for the list button is save in a variable
+        val todoList = onView(
             allOf(
-                withId(2131296721), withParentIndex(1), isDisplayed()
+                withId(2131296721),
+                withParentIndex(1),
+                isDisplayed()
             )
         )
-        appCompatTODOText.perform(click())
+        //we perform a click on the list
+        todoList.perform(click())
 
-        val appCompatEditTextNew = onView(
+        val newTaskTODOList = onView(
             allOf(
                 withId(R.id.addItemEditText),
                 childAtPosition(
@@ -55,28 +60,12 @@ class TODO_TASK {
                 isDisplayed()
             )
         )
-        appCompatEditTextNew.perform(replaceText("NEW_TASK_TODO"), closeSoftKeyboard())
-
-        val appCompatImageButton = onView(
-            allOf(
-                withId(R.id.validate), withContentDescription("Validate"),
-                childAtPosition(
-                    allOf(
-                        withId(R.id.addItemLayout),
-                        childAtPosition(
-                            withClassName(Matchers.`is`("android.widget.RelativeLayout")),
-                            1
-                        )
-                    ),
-                    1
-                ),
-                isDisplayed()
-            )
-        )
-        appCompatImageButton.perform(click())
+        //we type at the input box locator
+        newTaskTODOList.perform(replaceText("NEW_TASK"), closeSoftKeyboard())
     }
 
-
+    //Here we create a function to search the locations of the elements by child
+    //child position
     private fun childAtPosition(
         parentMatcher: Matcher<View>, position: Int
     ): Matcher<View> {

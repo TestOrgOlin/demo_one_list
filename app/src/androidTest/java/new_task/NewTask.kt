@@ -30,12 +30,16 @@ class newTask {
     var mActivityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
 
     @Test
+    //In this test we are going to add a new task to the Tuto ? list
     fun newTask() {
-        val appCompatEditText = onView(
+        // here we are putting the location for the input box in a variable
+        val addNewTask = onView(
             allOf(
+                //the input element is a child of the item layout in position with the index 0
                 withId(R.id.addItemEditText),
                 childAtPosition(
                     allOf(
+                        //the item layout is a child of the class Relative Layout with the index 1
                         withId(R.id.addItemLayout),
                         childAtPosition(
                             withClassName(`is`("android.widget.RelativeLayout")),
@@ -47,9 +51,11 @@ class newTask {
                 isDisplayed()
             )
         )
-        appCompatEditText.perform(replaceText("NEW_TASK"), closeSoftKeyboard())
+        //the perform method is chainable to the locator for typing the new task and closing the keyboard
+        addNewTask.perform(replaceText("NEW_TASK"), closeSoftKeyboard())
 
-        val appCompatImageButton = onView(
+        //once written the task need to click a button for the creation and displayed on the list
+        val validateTutoTask = onView(
             allOf(
                 withId(R.id.validate), withContentDescription("Validate"),
                 childAtPosition(
@@ -65,9 +71,11 @@ class newTask {
                 isDisplayed()
             )
         )
-        appCompatImageButton.perform(click())
+        //we perform the click in the validation button
+        validateTutoTask.perform(click())
     }
-
+    //Here we create a function to search the locations of the elements by child
+    //child position
     private fun childAtPosition(
         parentMatcher: Matcher<View>, position: Int
     ): Matcher<View> {

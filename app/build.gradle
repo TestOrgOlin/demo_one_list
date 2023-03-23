@@ -1,0 +1,100 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+
+android {
+
+    compileSdkVersion 29
+    defaultConfig {
+        applicationId "com.lolo.io.onelist"
+        minSdkVersion 16
+        targetSdkVersion 29
+        versionCode 14
+        versionName "1.3.1"
+        vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('C:\\Users\\Loic\\Dropbox (Personal)\\.keys\\keystores\\android.jks')
+            storePassword '7c3c1779c148a6ff3d5ee87e7ef70f81'
+            keyAlias 'OneListKey'
+            keyPassword '97220be66f2b279723c09f770ab45089'
+        }
+        release
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix '-DEBUG'
+            resValue "string", "app_name", "1ListDev"
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile(
+                    'proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
+            resValue "string", "app_name", "1List"
+            signingConfig signingConfigs.release
+        }
+    }
+    flavorDimensions "store"
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+repositories {
+    google()
+    jcenter()
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support.constraint:constraint-layout:2.0.2'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:1.0.0'
+    implementation 'com.google.android.material:material:1.3.0-alpha03'
+    implementation 'androidx.preference:preference-ktx:1.1.1'
+    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'com.google.android:flexbox:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10"
+    implementation 'org.immutables:gson:2.5.6'
+    implementation 'com.github.codekidX:storage-chooser:2.0.4.4'
+    implementation 'com.github.skydoves:powermenu:2.1.2'
+    implementation 'com.karumi:dexter:6.0.0'
+    implementation 'io.github.tonnyl:whatsnew:0.1.2'
+    implementation 'com.google.firebase:firebase-crashlytics:17.2.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+    androidTestImplementation 'androidx.test:rules:1.5.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation project(path: ':app')
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.5.1'
+
+
+}
+
+def props = new Properties()
+if (rootProject.file("release.properties").exists()) {
+    props.load(new FileInputStream(rootProject.file("release.properties")))
+    android.signingConfigs.release.storeFile file(props.keyStore)
+    android.signingConfigs.release.storePassword props.keyStorePassword
+    android.signingConfigs.release.keyAlias props.keyAlias
+    android.signingConfigs.release.keyPassword props.keyAliasPassword
+} else {
+    project.logger.info('INFO: Set the values storeFile, storePassword, keyAlias, and keyPassword in release.properties to sign the release.')
+    android.buildTypes.release.signingConfig = null
+}
